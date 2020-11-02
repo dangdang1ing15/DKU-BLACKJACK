@@ -32,12 +32,6 @@ void devideCard(int p[], int d[]);
 //카드의 합을 구하는 함수
 int sumOfCard(int deck[]);
 
-//뽑은 카드를 보여주는 함수
-void showCard(int deck[]);
-
-//카드를 추가하는 함수
-void addCard(void);	
-
 /* 마무리 */
 
 //승부 결정 함수
@@ -58,7 +52,7 @@ int main(void)
 	int player[N_DECK] = { 0 };	//플레이어의 카드 저장
 	int dealer[N_DECK] = { 0 };	//딜러의 카드 저장
 	int c;	//카드를 더 뽑을지 결정
-	int rate;	// end 리턴한 값 저장해 betting에 활용
+	int rate;	// end가 리턴한 값 저장해 betting에 활용
 
 	/*게임 플레이*/
 	startMenu();	//시작메뉴
@@ -78,16 +72,21 @@ int main(void)
 	printCard(player[1]);
 	printf("\n");
 
+	/*플레이어의 카드 추가*/
 	for (int i = 2; i < N_DECK; i++) {
 		printf("플레이어가 가진 카드의 합: %d\n", sumOfCard(player));
 		if (sumOfCard(player) > 21) break;
 		printf("카드를 더 뽑으시겠습니까?('y' or 'n') ");
 		getchar();	//버퍼 비우기
 		c = getchar();
-		if (c == 'y') drawCard(player);
+		if (c == 'y') {
+			drawCard(player);
+			printCard(player);
+		}
 		else break;
 	}
 
+	/*딜러의 카드 추가*/
 	for (int i = 2; i < N_DECK; i++) {
 		if (sumOfCard(dealer) > 21) break;
 		if (sumOfCard(dealer) < 17) drawCard(dealer);
@@ -171,7 +170,8 @@ int betting(int money, int rate) {
 }
 
 void devideCard(int p[], int d[]) {
-	drawCard(p);	//두 번씩 카드 뽑기
+	/*두 번씩 카드 뽑기*/
+	drawCard(p);
 	drawCard(p);
 	drawCard(d);
 	drawCard(d);
@@ -185,11 +185,11 @@ int sumOfCard(int deck[]) {
 	}
 	return sum;
 }
-void showCard(int cardInDeck) {
 
-}
 int end(int p[], int d[]) {
 	system("cls");
+
+	/*최종 덱 출력*/
 	printf("플레이어가 가진 카드: ");
 	for (int i = 0; p[i] != 0; i++)
 		printCard(p[i]);
@@ -199,7 +199,11 @@ int end(int p[], int d[]) {
 		printCard(d[i]);
 	printf("  합: %d\n", sumOfCard(d));
 
-	//합이 21이 넘는 경우는 Bust(패배처리)
+	/*합이 21이 넘는 경우는 Bust*/
+	if (sumOfCard(p) > 21 && sumOfCard(d) > 21) {
+		printf("모두 Bust! 무승부입니다.\n");
+		return TIE;
+	}
 	if (sumOfCard(p) > 21 && sumOfCard(d) <= 21) {
 		printf("플레이어의 Bust! 패배하셨습니다.\n");
 		return LOSE;
