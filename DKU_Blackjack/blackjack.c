@@ -1,46 +1,46 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>	//rand(), system()
 #include <time.h>	//time()
 #include <conio.h>	//getch();
 
-#define WIN 1	//½Â¸®
-#define LOSE 0 //ÆĞ¹è
-#define TIE -1	//¹«½ÂºÎ
-#define N_DECK 5	//°¢ ÇÃ·¹ÀÌ¾î°¡ °¡Áú ¼ö ÀÖ´Â ÃÖ´ë Ä«µå
-#define PLAYER 1	//1Àº ÇÃ·¹ÀÌ¾î¸¦ °¡¸®Å´
-#define DEALER 0	//0Àº µô·¯¸¦ °¡¸®Å´
-#define ACE -1		//A¸¦ 11·Î º¯°æÇÏ±â À§ÇÑ »ó¼ö 
+#define WIN 1	//ìŠ¹ë¦¬
+#define LOSE 0 //íŒ¨ë°°
+#define TIE -1	//ë¬´ìŠ¹ë¶€
+#define N_DECK 5	//ê° í”Œë ˆì´ì–´ê°€ ê°€ì§ˆ ìˆ˜ ìˆëŠ” ìµœëŒ€ ì¹´ë“œ
+#define PLAYER 1	//1ì€ í”Œë ˆì´ì–´ë¥¼ ê°€ë¦¬í‚´
+#define DEALER 0	//0ì€ ë”œëŸ¬ë¥¼ ê°€ë¦¬í‚´
+#define ACE -1		//Aë¥¼ 11ë¡œ ë³€ê²½í•˜ê¸° ìœ„í•œ ìƒìˆ˜ 
 
-/* ±âº» ÇÔ¼ö */
+/* ê¸°ë³¸ í•¨ìˆ˜ */
 
-//Ä«µå¸¦ Ãâ·ÂÇØÁÖ´Â ÇÔ¼ö
+//ì¹´ë“œë¥¼ ì¶œë ¥í•´ì£¼ëŠ” í•¨ìˆ˜
 void printCard(int cardInDeck, int index);
 
-//Ä«µå¸¦ »Ì´Â ÇÔ¼ö
+//ì¹´ë“œë¥¼ ë½‘ëŠ” í•¨ìˆ˜
 void drawCard(int deck[], int* save);
 
-/* ½ÃÀÛ ºÎºĞ */
+/* ì‹œì‘ ë¶€ë¶„ */
 
-//½ÃÀÛ ¸Ş´º UI¸¦ ±¸¼ºÇÏ´Â ÇÔ¼ö
+//ì‹œì‘ ë©”ë‰´ UIë¥¼ êµ¬ì„±í•˜ëŠ” í•¨ìˆ˜
 void startMenu(void);
 
-//º£ÆÃ ±İ¾×À» ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+//ë² íŒ… ê¸ˆì•¡ì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
 int betting(int money, int rate);
 
-/* ÇÃ·¹ÀÌ Áß */
+/* í”Œë ˆì´ ì¤‘ */
 
-//ÃÊ±â Ä«µå ºĞ¹è ÇÔ¼ö
+//ì´ˆê¸° ì¹´ë“œ ë¶„ë°° í•¨ìˆ˜
 void devideCard(int p[], int d[], int compare[][N_DECK]);
 
-//Ä«µåÀÇ ÇÕÀ» ±¸ÇÏ´Â ÇÔ¼ö
+//ì¹´ë“œì˜ í•©ì„ êµ¬í•˜ëŠ” í•¨ìˆ˜
 int sumOfCard(int deck[]);
 
-/* ¸¶¹«¸® */
+/* ë§ˆë¬´ë¦¬ */
 
-//½ÂºÎ °áÁ¤ ÇÔ¼ö
+//ìŠ¹ë¶€ ê²°ì • í•¨ìˆ˜
 int end(int p[], int d[], int compare[][N_DECK]);
 
-int card[52] = {	//Ä«µå ´ç Á¡¼ö¸¦ ÀúÀåÇÏ´Â ¹è¿­
+int card[52] = {	//ì¹´ë“œ ë‹¹ ì ìˆ˜ë¥¼ ì €ì¥í•˜ëŠ” ë°°ì—´
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -49,43 +49,43 @@ int card[52] = {	//Ä«µå ´ç Á¡¼ö¸¦ ÀúÀåÇÏ´Â ¹è¿­
 
 int main(void)
 {
-	/*º¯¼ö ¼±¾ğ*/
-	int bet;	//º£ÆÃ ±İ¾×
-	int sumOfPlayer = 0, sumOfDealer = 0;	//ÇÃ·¹ÀÌ¾î, µô·¯ÀÇ Ä«µå ÇÕ ÀúÀå
-	int player[N_DECK] = { 0 };	//ÇÃ·¹ÀÌ¾îÀÇ Ä«µå ÀúÀå
-	int dealer[N_DECK] = { 0 };	//µô·¯ÀÇ Ä«µå ÀúÀå
-	int save[2][N_DECK] = { 0 };	//ÀÎµ¦½º¸¦ ¹®¾ç Ãâ·Â¿¡ È°¿ë. 0ÇàÀº µô·¯, 1ÇàÀº ÇÃ·¹ÀÌ¾î
-	int c;	//Ä«µå¸¦ ´õ »ÌÀ»Áö °áÁ¤
-	int rate;	// end°¡ ¸®ÅÏÇÑ °ª ÀúÀåÇØ betting¿¡ È°¿ë
+	/*ë³€ìˆ˜ ì„ ì–¸*/
+	int bet;	//ë² íŒ… ê¸ˆì•¡
+	int sumOfPlayer = 0, sumOfDealer = 0;	//í”Œë ˆì´ì–´, ë”œëŸ¬ì˜ ì¹´ë“œ í•© ì €ì¥
+	int player[N_DECK] = { 0 };	//í”Œë ˆì´ì–´ì˜ ì¹´ë“œ ì €ì¥
+	int dealer[N_DECK] = { 0 };	//ë”œëŸ¬ì˜ ì¹´ë“œ ì €ì¥
+	int save[2][N_DECK] = { 0 };	//ì¸ë±ìŠ¤ë¥¼ ë¬¸ì–‘ ì¶œë ¥ì— í™œìš©. 0í–‰ì€ ë”œëŸ¬, 1í–‰ì€ í”Œë ˆì´ì–´
+	int c;	//ì¹´ë“œë¥¼ ë” ë½‘ì„ì§€ ê²°ì •
+	int rate;	// endê°€ ë¦¬í„´í•œ ê°’ ì €ì¥í•´ bettingì— í™œìš©
 	
 
-	/*°ÔÀÓ ÇÃ·¹ÀÌ*/
-	startMenu();	//½ÃÀÛ¸Ş´º
-	/*º£ÆÃ*/
-	printf("¾ó¸¶¸¦ º£ÆÃÇÏ½Ã°Ú½À´Ï±î?(¿ø): ");
+	/*ê²Œì„ í”Œë ˆì´*/
+	startMenu();	//ì‹œì‘ë©”ë‰´
+	/*ë² íŒ…*/
+	printf("ì–¼ë§ˆë¥¼ ë² íŒ…í•˜ì‹œê² ìŠµë‹ˆê¹Œ?(ì›): ");
 	scanf_s("%d", &bet);
 
-	system("cls");	//È­¸é ÃÊ±âÈ­
+	system("cls");	//í™”ë©´ ì´ˆê¸°í™”
 
-	/*1Â÷ Ä«µå ºĞ¹è*/
+	/*1ì°¨ ì¹´ë“œ ë¶„ë°°*/
 	devideCard(player, dealer, save);
-	printf("µô·¯ÀÇ Ä«µå Áß ÇÑ Àå: ");
+	printf("ë”œëŸ¬ì˜ ì¹´ë“œ ì¤‘ í•œ ì¥: ");
 	printCard(dealer[0], save[DEALER][0]);
 	printf("\n");
-	printf("ÇÃ·¹ÀÌ¾îÀÇ Ä«µå: ");
+	printf("í”Œë ˆì´ì–´ì˜ ì¹´ë“œ: ");
 	printCard(player[0], save[PLAYER][0]);
 
 	printCard(player[1], save[PLAYER][1]);
 	printf("\n");
 
-	/*ÇÃ·¹ÀÌ¾îÀÇ Ä«µå Ãß°¡*/
+	/*í”Œë ˆì´ì–´ì˜ ì¹´ë“œ ì¶”ê°€*/
 	for (int i = 2; i < N_DECK; i++) {
-		printf("ÇÃ·¹ÀÌ¾î°¡ °¡Áø Ä«µåÀÇ ÇÕ: %d\n", sumOfCard(player));
-		if (sumOfCard(player) > 21) break;	//bust¸é Áï½Ã °ÔÀÓ Á¾·á
-		printf("Ä«µå¸¦ ´õ »ÌÀ¸½Ã°Ú½À´Ï±î?('y' or 'n') ");
-		getchar();	//¹öÆÛ ºñ¿ì±â
+		printf("í”Œë ˆì´ì–´ê°€ ê°€ì§„ ì¹´ë“œì˜ í•©: %d\n", sumOfCard(player));
+		if (sumOfCard(player) > 21) break;	//bustë©´ ì¦‰ì‹œ ê²Œì„ ì¢…ë£Œ
+		printf("ì¹´ë“œë¥¼ ë” ë½‘ìœ¼ì‹œê² ìŠµë‹ˆê¹Œ?('y' or 'n') ");
+		getchar();	//ë²„í¼ ë¹„ìš°ê¸°
 		c = getchar();
-		if (c == 'y') {	//y¸¦ ÀÔ·ÂÇÏ¸é Ä«µå¸¦ ´õ »Ì°í »ÌÀº Ä«µå¸¦ º¸¿©ÁÜ
+		if (c == 'y') {	//yë¥¼ ì…ë ¥í•˜ë©´ ì¹´ë“œë¥¼ ë” ë½‘ê³  ë½‘ì€ ì¹´ë“œë¥¼ ë³´ì—¬ì¤Œ
 			drawCard(player, &save[PLAYER][i], PLAYER);
 			printCard(player[i], save[PLAYER][i]);
 			printf("\n");
@@ -93,26 +93,26 @@ int main(void)
 		else break;
 	}
 
-	/*µô·¯ÀÇ Ä«µå Ãß°¡*/
+	/*ë”œëŸ¬ì˜ ì¹´ë“œ ì¶”ê°€*/
 	for (int i = 2; i < N_DECK; i++) {
-		if (sumOfCard(dealer) > 21) break;	//bust¸é Áï½Ã °ÔÀÓ Á¾·á
+		if (sumOfCard(dealer) > 21) break;	//bustë©´ ì¦‰ì‹œ ê²Œì„ ì¢…ë£Œ
 		if (sumOfCard(dealer) < 17) drawCard(dealer, &save[DEALER][i], DEALER);
 	}
 
 	rate = end(player, dealer, save);
 	bet = betting(bet, rate);
-	printf("±İ¾×: %d", bet);
+	printf("ê¸ˆì•¡: %d", bet);
 
 	return 0;
 }
 
 void printCard(int cardInDeck, int index) {
-	/*ÀÎµ¦½º¿¡ µû¶ó ¹®¾ç Ãâ·Â*/
-	if (index < 13) printf("½ºÆäÀÌµå ");
-	else if (index < 26) printf("´ÙÀÌ¾Æ¸óµå ");
-	else if (index < 39) printf("Å¬·Î¹ö ");
-	else printf("ÇÏÆ® ");
-	/*Ä«µå°ª Ãâ·Â*/
+	/*ì¸ë±ìŠ¤ì— ë”°ë¼ ë¬¸ì–‘ ì¶œë ¥*/
+	if (index < 13) printf("ìŠ¤í˜ì´ë“œ ");
+	else if (index < 26) printf("ë‹¤ì´ì•„ëª¬ë“œ ");
+	else if (index < 39) printf("í´ë¡œë²„ ");
+	else printf("í•˜íŠ¸ ");
+	/*ì¹´ë“œê°’ ì¶œë ¥*/
 	switch (cardInDeck) {
 	case -1:
 	case 1: {
@@ -147,17 +147,17 @@ void printCard(int cardInDeck, int index) {
 }
 
 void drawCard(int deck[], int *save) {
-	srand((unsigned)time(NULL)); //·£´ı ½Ãµå
-	static int compare[10];		//Áßº¹ ºñ±³
-	static int cnt = 0;			//ÀÎµ¦½º¸¦ ÀúÀåÇÏ±â À§ÇÑ º¯¼ö
+	srand((unsigned)time(NULL)); //ëœë¤ ì‹œë“œ
+	static int compare[10];		//ì¤‘ë³µ ë¹„êµ
+	static int cnt = 0;			//ì¸ë±ìŠ¤ë¥¼ ì €ì¥í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
 	int index = rand() % 52;
-	/*Áßº¹ Á¦°ÅÇÏ¸ç ³­¼ö »ı¼º*/
+	/*ì¤‘ë³µ ì œê±°í•˜ë©° ë‚œìˆ˜ ìƒì„±*/
 	for (int i = 0; i < cnt; i++) {
 		index = rand() % 52;
-		compare[cnt] = index;	//ÀÎµ¦½º¸¦ ÀúÀå
+		compare[cnt] = index;	//ì¸ë±ìŠ¤ë¥¼ ì €ì¥
 		for (int j = 0; j < i; j++) {
-			if (compare[i] == compare[j]) {	//Áßº¹ÀÌ ÀÖÀ¸¸é
-				cnt--;						//ÀÎµ¦½º ´Ù½Ã »ı¼º
+			if (compare[i] == compare[j]) {	//ì¤‘ë³µì´ ìˆìœ¼ë©´
+				cnt--;						//ì¸ë±ìŠ¤ ë‹¤ì‹œ ìƒì„±
 				break;
 			}
 		}
@@ -165,11 +165,11 @@ void drawCard(int deck[], int *save) {
 	*save = index;
 	for (int i = 0; i < N_DECK; i++) {
 		if (deck[i] == 0) {
-			deck[i] = card[index];	//°ÔÀÌ¸ÓÀÇ µ¦¿¡ Ä«µå Ãß°¡
-			/*A´Â 1°ú 11Áß ¼±ÅÃ, 11À» ¼±ÅÃÇÏ¸é ACE(-1)·Î ÀúÀåÇÏ¿© ÇÕ°è¿¡ »ç¿ë*/
+			deck[i] = card[index];	//ê²Œì´ë¨¸ì˜ ë±ì— ì¹´ë“œ ì¶”ê°€
+			/*AëŠ” 1ê³¼ 11ì¤‘ ì„ íƒ, 11ì„ ì„ íƒí•˜ë©´ ACE(-1)ë¡œ ì €ì¥í•˜ì—¬ í•©ê³„ì— ì‚¬ìš©*/
 			if (deck[i] == 1) {
-				printf("A´Â 1°ú 11Áß ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù.\n");
-				printf("1À» ÀÔ·ÂÇÏ¸é 1·Î, 2¸¦ ÀÔ·ÂÇÏ¸é 11·Î ¼±ÅÃÇÕ´Ï´Ù.");
+				printf("AëŠ” 1ê³¼ 11ì¤‘ ì„ íƒí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.\n");
+				printf("1ì„ ì…ë ¥í•˜ë©´ 1ë¡œ, 2ë¥¼ ì…ë ¥í•˜ë©´ 11ë¡œ ì„ íƒí•©ë‹ˆë‹¤.");
 				int n;
 				scanf_s("%d", &n);
 				if (n == 1) deck[i] = card[index];
@@ -182,18 +182,18 @@ void drawCard(int deck[], int *save) {
 }
 
 void startMenu(void) {
-	printf("ºí·¢Àè °ÔÀÓÀÔ´Ï´Ù. ÇÃ·¹ÀÌÇÏ·Á¸é ¾Æ¹«Å°³ª ´©¸£¼¼¿ä.\n");
-	_getch();	//¾Æ¹« Å° ÀÔ·Â¹Ş±â
-	system("cls");	//È­¸é ÃÊ±âÈ­
+	printf("ë¸”ë™ì­ ê²Œì„ì…ë‹ˆë‹¤. í”Œë ˆì´í•˜ë ¤ë©´ ì•„ë¬´í‚¤ë‚˜ ëˆ„ë¥´ì„¸ìš”.\n");
+	_getch();	//ì•„ë¬´ í‚¤ ì…ë ¥ë°›ê¸°
+	system("cls");	//í™”ë©´ ì´ˆê¸°í™”
 }
 int betting(int money, int rate) {
-	if (rate == WIN) return money * 2;	//ÀÌ±â¸é 2¹è
-	else if (rate == LOSE) return 0; 	//Áö¸é ¸ğµÎ ÀÒ´Â´Ù
-	return money;	//¹«½ÂºÎ¸é ±×´ë·Î
+	if (rate == WIN) return money * 2;	//ì´ê¸°ë©´ 2ë°°
+	else if (rate == LOSE) return 0; 	//ì§€ë©´ ëª¨ë‘ ìƒëŠ”ë‹¤
+	return money;	//ë¬´ìŠ¹ë¶€ë©´ ê·¸ëŒ€ë¡œ
 }
 
 void devideCard(int p[], int d[], int save[][N_DECK]) {
-	/*µÎ ¹ø¾¿ Ä«µå »Ì±â*/
+	/*ë‘ ë²ˆì”© ì¹´ë“œ ë½‘ê¸°*/
 	drawCard(p, &save[PLAYER][0], PLAYER);
 	drawCard(p, &save[PLAYER][1], PLAYER);
 	drawCard(d, &save[DEALER][0], DEALER);
@@ -202,7 +202,7 @@ void devideCard(int p[], int d[], int save[][N_DECK]) {
 
 int sumOfCard(int deck[]) {
 	int sum = 0;
-	for (int i = 0; deck[i] != 0; i++) {	//ÀúÀåµÈ ¼ıÀÚ¸¸ ´õÇÏ±â
+	for (int i = 0; deck[i] != 0; i++) {	//ì €ì¥ëœ ìˆ«ìë§Œ ë”í•˜ê¸°
 		if (deck[i] == ACE) sum += 11;
 		else if (deck[i] > 10) sum += 10;
 		else sum += deck[i];
@@ -213,38 +213,38 @@ int sumOfCard(int deck[]) {
 int end(int p[], int d[], int save[][N_DECK]) {
 	system("cls");
 
-	/*ÃÖÁ¾ µ¦ Ãâ·Â*/
-	printf("ÇÃ·¹ÀÌ¾î°¡ °¡Áø Ä«µå: ");
+	/*ìµœì¢… ë± ì¶œë ¥*/
+	printf("í”Œë ˆì´ì–´ê°€ ê°€ì§„ ì¹´ë“œ: ");
 	for (int i = 0; p[i] != 0; i++)
 		printCard(p[i], save[PLAYER][i]);
-	printf(" ÇÕ: %d\n", sumOfCard(p));
-	printf("µô·¯°¡ °¡Áø Ä«µå: ");
+	printf(" í•©: %d\n", sumOfCard(p));
+	printf("ë”œëŸ¬ê°€ ê°€ì§„ ì¹´ë“œ: ");
 	for (int i = 0; d[i] != 0; i++)
 		printCard(d[i], save[DEALER][i]);
-	printf("  ÇÕ: %d\n", sumOfCard(d));
+	printf("  í•©: %d\n", sumOfCard(d));
 
-	/*ÇÕÀÌ 21ÀÌ ³Ñ´Â °æ¿ì´Â Bust*/
+	/*í•©ì´ 21ì´ ë„˜ëŠ” ê²½ìš°ëŠ” Bust*/
 	if (sumOfCard(p) > 21 && sumOfCard(d) > 21) {
-		printf("¸ğµÎ Bust! ¹«½ÂºÎÀÔ´Ï´Ù.\n");
+		printf("ëª¨ë‘ Bust! ë¬´ìŠ¹ë¶€ì…ë‹ˆë‹¤.\n");
 		return TIE;
 	}
 	if (sumOfCard(p) > 21 && sumOfCard(d) <= 21) {
-		printf("ÇÃ·¹ÀÌ¾îÀÇ Bust! ÆĞ¹èÇÏ¼Ì½À´Ï´Ù.\n");
+		printf("í”Œë ˆì´ì–´ì˜ Bust! íŒ¨ë°°í•˜ì…¨ìŠµë‹ˆë‹¤.\n");
 		return LOSE;
 	}
 	else if (sumOfCard(d) > 21) {
-		printf("ÄÄÇ»ÅÍÀÇ Bust! ½Â¸®ÇÏ¼Ì½À´Ï´Ù.\n");
+		printf("ì»´í“¨í„°ì˜ Bust! ìŠ¹ë¦¬í•˜ì…¨ìŠµë‹ˆë‹¤.\n");
 		return WIN;
 	}
 	else if (sumOfCard(p) > sumOfCard(d)) {
-		printf("½Â¸®ÇÏ¼Ì½À´Ï´Ù.\n");
+		printf("ìŠ¹ë¦¬í•˜ì…¨ìŠµë‹ˆë‹¤.\n");
 		return WIN;
 	}
 	else if (sumOfCard(p) < sumOfCard(d)) {
-		printf("ÆĞ¹èÇÏ¼Ì½À´Ï´Ù.\n");
+		printf("íŒ¨ë°°í•˜ì…¨ìŠµë‹ˆë‹¤.\n");
 		return LOSE;
 	}
 	else if (sumOfCard(p) == sumOfCard(d))
-		printf("¹«½ÂºÎ!\n");
+		printf("ë¬´ìŠ¹ë¶€!\n");
 	return TIE;
 }
