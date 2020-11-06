@@ -13,7 +13,7 @@
 
 /* 기본 함수 */
 
-//카드를 출력해주는 함수
+//카드를 출력해주는 함수//
 void printCard(int cardInDeck, int index);
 
 //카드를 뽑는 함수
@@ -38,7 +38,7 @@ int sumOfCard(int deck[]);
 /* 마무리 */
 
 //승부 결정 함수
-int end(int p[], int d[], int compare[][N_DECK]);
+int end(int p[], int d[], int save[][N_DECK]);
 
 int card[52] = {	//카드 당 점수를 저장하는 배열
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -49,6 +49,7 @@ int card[52] = {	//카드 당 점수를 저장하는 배열
 
 int main(void)
 {
+	system("chcp 65001");	//인코딩 문제로 콘솔의 한글이 깨질 수도 있어서 추가
 	/*변수 선언*/
 	int bet;	//베팅 금액
 	int sumOfPlayer = 0, sumOfDealer = 0;	//플레이어, 딜러의 카드 합 저장
@@ -107,6 +108,10 @@ int main(void)
 }
 
 void printCard(int cardInDeck, int index) {
+	/*카드를 출력해주는 함수
+cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
+index: 문약 출력에 이용, save 변수의 값을 받는다*/
+
 	/*인덱스에 따라 문양 출력*/
 	if (index < 13) printf("스페이드 ");
 	else if (index < 26) printf("다이아몬드 ");
@@ -147,10 +152,14 @@ void printCard(int cardInDeck, int index) {
 }
 
 void drawCard(int deck[], int *save) {
+	/*카드를 뽑는 함수
+deck: player 또는 dealer의 덱, player, dealer 변수의 값을 받는다
+*save: 뽑은 카드의 위치 저장(문양 출력에 이용), save의 값을 받는다*/
+
 	srand((unsigned)time(NULL)); //랜덤 시드
-	static int compare[10];		//중복 비교
-	static int cnt = 0;			//인덱스를 저장하기 위한 변수
-	int index = rand() % 52;
+	static int compare[10];		//지금까지 뽑은 카드를 저장하는 곳
+	static int cnt = 0;			//지금까지 뽑은 카드의 개수
+	int index = rand() % 52;	//카드를 뽑을 때 사용하는 변수
 	/*중복 제거하며 난수 생성*/
 	for (int i = 0; i < cnt; i++) {
 		index = rand() % 52;
@@ -187,6 +196,10 @@ void startMenu(void) {
 	system("cls");	//화면 초기화
 }
 int betting(int money, int rate) {
+	/*베팅 금액을 반환하는 함수
+money: 베팅한 금액, bet 변수를 받는다
+rate: 승패 확인, rate 변수를 받는다*/
+
 	if (rate == WIN) return money * 2;	//이기면 2배
 	else if (rate == LOSE) return 0; 	//지면 모두 잃는다
 	return money;	//무승부면 그대로
@@ -211,6 +224,11 @@ int sumOfCard(int deck[]) {
 }
 
 int end(int p[], int d[], int save[][N_DECK]) {
+	/*승부 결정 함수
+p는 player 변수를 받는다
+d는 dealer 변수를 받는다
+save는 save 변수를 받는다*/
+
 	system("cls");
 
 	/*최종 덱 출력*/
