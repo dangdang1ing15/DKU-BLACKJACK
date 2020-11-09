@@ -14,10 +14,19 @@ void drawbanner();
 void selectXY();
 
 int main(){
-    syssett();
-    drawbanner();
-    selectxy();
-    int menuSelect()=selecyXY();
+    init():
+    while (1) {
+        drawbanner();
+        int menuSelect() = selectXY();
+        if(menuSelect == 0){
+            //게임 시작
+        } else if(menuSelect == 1){
+            //게임 인포
+        } else if(menuSelect == 2){
+            //게임 종료
+        }
+        system("cls");
+    }
     return 0;
 }
 
