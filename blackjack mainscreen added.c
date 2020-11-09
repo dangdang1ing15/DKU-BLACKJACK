@@ -25,7 +25,7 @@ void drawbanner();
 void selectXY();
 
 int main(){
-    init():
+    init();
     while (1) {
         drawbanner();
         int menuSelect() = selectXY();
@@ -42,7 +42,7 @@ int main(){
 }
 
 int keycontrol(){
-    char temp=getch():
+    char temp=getch();
     
     if(temp == 'UP'){
         return UP;
@@ -93,14 +93,14 @@ int selectXY(){
     gotoxy(24, 22);
     printf("게임 종료");
     while (1) {
-        int n = keycontrol():
+        int n = keycontrol();
         switch (n) {
                 case UP: {
                         if(y>20){
                             gotoxy(x-2, y);
                             printf(" ");
                             gotoxy(x-2, --y);
-                            printf(">")
+                            printf(">");
                         }
                         break;
                 }
