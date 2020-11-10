@@ -17,7 +17,7 @@
 void printCard(int cardInDeck, int index);
 
 //카드를 뽑는 함수
-void drawCard(int deck[], int* save);
+void drawCard(int deck[], int* save, int playerOrDealer);
 
 /* 시작 부분 */
 
@@ -56,10 +56,13 @@ int main(void)
 	int sumOfPlayer = 0, sumOfDealer = 0;	//플레이어, 딜러의 카드 합 저장
 	int player[N_DECK] = { 0 };	//플레이어의 카드 저장
 	int dealer[N_DECK] = { 0 };	//딜러의 카드 저장
-	int save[2][N_DECK] = { 0 };	//인덱스를 문양 출력에 활용. 0행은 딜러, 1행은 플레이어
+	int save[2][N_DECK];	//인덱스를 문양 출력에 활용. 0행은 딜러, 1행은 플레이어
 	int c;	//카드를 더 뽑을지 결정
 	int rate;	// end가 리턴한 값 저장해 betting에 활용
 	
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < N_DECK; j++)
+			save[i][j] = -1;	//save의 기본값은 음수로 지정함.
 
 	/*게임 플레이*/
 	startMenu();	//시작메뉴
@@ -111,10 +114,11 @@ int main(void)
 void printCard(int cardInDeck, int index) {
 	/*카드를 출력해주는 함수
 cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
-index: 문약 출력에 이용, save 변수의 값을 받는다*/
+index: 문양 출력에 이용, save 변수의 값을 받는다*/
 
 	/*인덱스에 따라 문양 출력*/
-	if (index < 13) printf("스페이드 ");
+	if (index < 0) printf("");
+	else if (index < 13) printf("스페이드 ");
 	else if (index < 26) printf("다이아몬드 ");
 	else if (index < 39) printf("클로버 ");
 	else printf("하트 ");
@@ -152,10 +156,11 @@ index: 문약 출력에 이용, save 변수의 값을 받는다*/
 	}
 }
 
-void drawCard(int deck[], int *save) {
+void drawCard(int deck[], int *save, int playerOrDealer) {
 	/*카드를 뽑는 함수
 deck: player 또는 dealer의 덱, player, dealer 변수의 값을 받는다
-*save: 뽑은 카드의 위치 저장(문양 출력에 이용), save의 값을 받는다*/
+*save: 뽑은 카드의 위치 저장(문양 출력에 이용), save의 값을 받는다
+playerOrDealer: 플레이어인지 딜러인지 확인하고 A선택권 부여*/
 
 	srand((unsigned)time(NULL)); //랜덤 시드
 	static int compare[10];		//지금까지 뽑은 카드를 저장하는 곳
@@ -178,12 +183,14 @@ deck: player 또는 dealer의 덱, player, dealer 변수의 값을 받는다
 			deck[i] = card[index];	//게이머의 덱에 카드 추가
 			/*A는 1과 11중 선택, 11을 선택하면 ACE(-1)로 저장하여 합계에 사용*/
 			if (deck[i] == 1) {
-				printf("A는 1과 11중 선택할 수 있습니다.\n");
-				printf("1을 입력하면 1로, 2를 입력하면 11로 선택합니다.");
-				int n;
-				scanf_s("%d", &n);
-				if (n == 1) deck[i] = card[index];
-				else deck[i] = ACE;
+				if (playerOrDealer == PLAYER) {	//플레이어는 A를 1과 11중 선택
+					printf("A는 1과 11중 선택할 수 있습니다.\n");
+					printf("1을 입력하면 1로, 2를 입력하면 11로 선택합니다.");
+					int n;
+					scanf_s("%d", &n);
+					if (n == 1) deck[i] = card[index];
+					else deck[i] = ACE;
+				}
 			}
 			break;
 		}
@@ -208,15 +215,15 @@ rate: 승패 확인, rate 변수를 받는다*/
 
 void devideCard(int p[], int d[], int save[][N_DECK]) {
 	/*두 번씩 카드 뽑기*/
-	drawCard(p, &save[PLAYER][0]);
-	drawCard(p, &save[PLAYER][1]);
-	drawCard(d, &save[DEALER][0]);
-	drawCard(d, &save[DEALER][1]);
+	drawCard(p, &save[PLAYER][0], PLAYER);
+	drawCard(p, &save[PLAYER][1], PLAYER);
+	drawCard(d, &save[DEALER][0], DEALER);
+	drawCard(d, &save[DEALER][1], DEALER);
 }
 
 int sumOfCard(int deck[]) {
 	int sum = 0;
-	for (int i = 0; deck[i] != 0; i++) {	//저장된 숫자만 더하기
+	for (int i = 0; i < N_DECK; i++) {	//합 구하기
 		if (deck[i] == ACE) sum += 11;
 		else if (deck[i] > 10) sum += 10;
 		else sum += deck[i];
@@ -234,11 +241,11 @@ save는 save 변수를 받는다*/
 
 	/*최종 덱 출력*/
 	printf("플레이어가 가진 카드: ");
-	for (int i = 0; p[i] != 0; i++)
+	for (int i = 0; i < N_DECK; i++)
 		printCard(p[i], save[PLAYER][i]);
 	printf(" 합: %d\n", sumOfCard(p));
 	printf("딜러가 가진 카드: ");
-	for (int i = 0; d[i] != 0; i++)
+	for (int i = 0; i < N_DECK; i++)
 		printCard(d[i], save[DEALER][i]);
 	printf("  합: %d\n", sumOfCard(d));
 
