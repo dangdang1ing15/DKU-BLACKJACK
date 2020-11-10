@@ -49,7 +49,8 @@ int card[52] = {	//카드 당 점수를 저장하는 배열
 
 int main(void)
 {
-	system("chcp 65001");	//인코딩 문제로 콘솔의 한글이 깨질 수도 있어서 추가
+	system("chcp 65001");	//인코딩 문제로 콘솔의 한글이 깨질 수도 있어서 추가. 필요에 따라 삭제
+	system("cls");	//화면 초기화
 	/*변수 선언*/
 	int bet;	//베팅 금액
 	int sumOfPlayer = 0, sumOfDealer = 0;	//플레이어, 딜러의 카드 합 저장
@@ -207,10 +208,10 @@ rate: 승패 확인, rate 변수를 받는다*/
 
 void devideCard(int p[], int d[], int save[][N_DECK]) {
 	/*두 번씩 카드 뽑기*/
-	drawCard(p, &save[PLAYER][0], PLAYER);
-	drawCard(p, &save[PLAYER][1], PLAYER);
-	drawCard(d, &save[DEALER][0], DEALER);
-	drawCard(d, &save[DEALER][1], DEALER);
+	drawCard(p, &save[PLAYER][0]);
+	drawCard(p, &save[PLAYER][1]);
+	drawCard(d, &save[DEALER][0]);
+	drawCard(d, &save[DEALER][1]);
 }
 
 int sumOfCard(int deck[]) {
