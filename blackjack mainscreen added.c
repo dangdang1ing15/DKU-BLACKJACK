@@ -121,6 +121,7 @@ int main(){
 }
         } else if(menuSelect == 1){
             //게임 인포
+            gameInfo();
         } else if(menuSelect == 2){
             //게임 종료
             return 0;
