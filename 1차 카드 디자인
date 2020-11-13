@@ -1,7 +1,12 @@
 void printCard(int cardInDeck, int index) {
+	/*카드를 출력해주는 함수
+	cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
+	index: 문양 출력에 이용, save 변수의 값을 받는다*/
+
 	char pattern[3] = "";
 	/*인덱스에 따라 문양 출력*/
-	if (index < 13) strcpy_s(pattern, 3, "♠");
+	if (index < 0) printf("");	//비어있으면 아무것도 출력하지 않음
+	else if (index < 13) strcpy_s(pattern, 3, "♠");
 	else if (index < 26) strcpy_s(pattern, 3, "◆");
 	else if (index < 39) strcpy_s(pattern, 3, "♣");
 	else strcpy_s(pattern, 3, "♥");
