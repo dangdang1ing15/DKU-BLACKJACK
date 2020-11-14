@@ -19,7 +19,7 @@
 
 /* 기본 함수 */
 //카드를 출력해주는 함수
-void printCard(int cardInDeck, int index); 
+void printCard(int cardInDeck, int index);
 //카드를 뽑는 함수
 void drawCard(int deck[], int* save, int playerOrDealer);
 
@@ -43,7 +43,7 @@ int end(int p[], int d[], int save[][N_DECK]);
 //키보드에서 값을 입력받아 메뉴 이동, 선택
 int keycontrol();
 // 초기 화면 크기 조정
-void syssett();	
+void syssett();
 //지정한 좌표로 이동
 void gotoxy(int, int);
 //blackjack 메인 이미지 그리기
@@ -72,7 +72,9 @@ int main(void)
 		int menuSelect = selectXY();	//메뉴 선택
 		system("cls");
 		if (menuSelect == 0) {	//'게임 시작' 선택하면 실행
-			system("mode con cols=100 lines=24");	//크기 재조정
+			system("mode con cols=100 lines=30");	//크기 재조정
+			COORD bufferSize = { 100, 9001 }; // 출력버퍼 조절 - 화면 잘림 방지
+			SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), bufferSize);
 			/*변수 선언*/
 			int bet;	//베팅 금액
 			int sumOfPlayer = 0, sumOfDealer = 0;	//플레이어, 딜러의 카드 합 저장
@@ -148,20 +150,31 @@ int main(void)
 
 void printCard(int cardInDeck, int index) {
 	/*카드를 출력해주는 함수
-cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
-index: 문양 출력에 이용, save 변수의 값을 받는다*/
+	cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
+	index: 문양 출력에 이용, save 변수의 값을 받는다*/
 
+	char pattern[5] = "";
 	/*인덱스에 따라 문양 출력*/
 	if (index < 0) printf("");	//비어있으면 아무것도 출력하지 않음
-	else if (index < 13) printf("스페이드 ");
-	else if (index < 26) printf("다이아몬드 ");
-	else if (index < 39) printf("클로버 ");
-	else printf("하트 ");
+	else if (index < 13) strcpy_s(pattern, 3, "♠");
+	else if (index < 26) strcpy_s(pattern, 3, "◆");
+	else if (index < 39) strcpy_s(pattern, 3, "♣");
+	else strcpy_s(pattern, 3, "♥");
+
 	/*카드값 출력*/
 	switch (cardInDeck) {
 	case -1:
 	case 1: {
-		printf("A ");
+		printf("\n");
+		printf("┌──────────┐\n");
+		printf("│%s        │\n", pattern);
+		printf("│ %c        │\n", 'A');
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│         %c│\n", 'A');
+		printf("│        %s│\n", pattern);
+		printf("└──────────┘\n");
 		break;
 	}
 	case 2:
@@ -171,27 +184,75 @@ index: 문양 출력에 이용, save 변수의 값을 받는다*/
 	case 6:
 	case 7:
 	case 8:
-	case 9:
+	case 9: {
+		printf("\n");
+		printf("┌──────────┐\n");
+		printf("│%s        │\n", pattern);
+		printf("│ %d        │\n", cardInDeck);
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│         %d│\n", cardInDeck);
+		printf("│        %s│\n", pattern);
+		printf("└──────────┘\n");
+		break;
+	}
 	case 10: {
-		printf("%d ", cardInDeck);
+		printf("\n");
+		printf("┌──────────┐\n");
+		printf("│%s        │\n", pattern);
+		printf("│%d        │\n", cardInDeck);
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│        %d│\n", cardInDeck);
+		printf("│        %s│\n", pattern);
+		printf("└──────────┘\n");
 		break;
 	}
 	case 11: {
-		printf("J ");
+		printf("\n");
+		printf("┌──────────┐\n");
+		printf("│%s        │\n", pattern);
+		printf("│ %c        │\n", 'J');
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│         %c│\n", 'J');
+		printf("│        %s│\n", pattern);
+		printf("└──────────┘\n");
 		break;
 	}
 	case 12: {
-		printf("Q ");
+		printf("\n");
+		printf("┌──────────┐\n");
+		printf("│%s        │\n", pattern);
+		printf("│ %c        │\n", 'Q');
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│         %c│\n", 'Q');
+		printf("│        %s│\n", pattern);
+		printf("└──────────┘\n");
 		break;
 	}
 	case 13: {
-		printf("K ");
+		printf("\n");
+		printf("┌──────────┐\n");
+		printf("│%s        │\n", pattern);
+		printf("│ %c        │\n", 'K');
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│          │\n");
+		printf("│         %c│\n", 'K');
+		printf("│        %s│\n", pattern);
+		printf("└──────────┘\n");
 		break;
 	}
 	}
 }
 
-void drawCard(int deck[], int *save, int playerOrDealer) {
+void drawCard(int deck[], int* save, int playerOrDealer) {
 	/*카드를 뽑는 함수
 deck: player 또는 dealer의 덱, player, dealer 변수의 값을 받는다
 *save: 뽑은 카드의 위치 저장(문양 출력에 이용), save의 값을 받는다
