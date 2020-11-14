@@ -3,6 +3,9 @@
 #include <time.h>	//time()
 #include <conio.h>	//getch();
 #include <windows.h>	//키보드 입력
+#pragma comment (lib, "winmm.lib")	//음악
+#include <mmsystem.h>;				//음악
+#include <Digitalv.h>;				//음악
 
 #define WIN 1	//승리
 #define LOSE 0 //패배
@@ -17,11 +20,22 @@
 #define DOWN 11
 #define SUBMIT 12
 
+/*음악 재생*/
+MCI_OPEN_PARMS openBgm;
+MCI_PLAY_PARMS playBgm;
+MCI_OPEN_PARMS openShuffleSound;
+MCI_PLAY_PARMS playShuffleSound;
+#define BGM "C:\\BGM.mp3"	//BGM 경로 지정
+#define SHUFFLE "C:\\shuffle.mp3"	//효과음 경로 지정
+int dwID;
+
+
 /* 기본 함수 */
 //카드를 출력해주는 함수
 void printCard(int cardInDeck, int index);
 //카드를 뽑는 함수
 void drawCard(int deck[], int* save, int playerOrDealer);
+
 
 /* 시작 부분 */
 //시작 메뉴 UI를 구성하는 함수
@@ -53,6 +67,10 @@ int selectXY();
 //제작정보
 void gameInfo();
 
+/*음악 재생 함수*/
+void playingBgm(void);
+void playingShuffleSound(void);
+
 int card[52] = {	//카드 당 점수를 저장하는 배열
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 	1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
@@ -68,9 +86,11 @@ int main(void)
 	system("cls");	//화면 초기화
 
 	while (1) {
+		playingBgm();
 		drawbanner();
 		int menuSelect = selectXY();	//메뉴 선택
 		system("cls");
+
 		if (menuSelect == 0) {	//'게임 시작' 선택하면 실행
 			system("mode con cols=100 lines=30");	//크기 재조정
 			COORD bufferSize = { 100, 9001 }; // 출력버퍼 조절 - 화면 잘림 방지
@@ -97,6 +117,7 @@ int main(void)
 			system("cls");	//화면 초기화
 
 			/*1차 카드 분배*/
+			playingShuffleSound();
 			devideCard(player, dealer, save);
 			printf("딜러의 카드 중 한 장: ");
 			printCard(dealer[0], save[DEALER][0]);
@@ -115,6 +136,7 @@ int main(void)
 				getchar();	//버퍼 비우기
 				c = getchar();
 				if (c == 'y') {	//y를 입력하면 카드를 더 뽑고 뽑은 카드를 보여줌
+					playingShuffleSound();
 					drawCard(player, &save[PLAYER][i], PLAYER);
 					printCard(player[i], save[PLAYER][i]);
 					printf("\n");
@@ -142,10 +164,11 @@ int main(void)
 		else if (menuSelect == 2) {		//'게임종료' 선택하면 실행
 			//게임 종료
 			printf("게임을 종료합니다.\n");
-			return 0;
+			break;
 		}
 		system("cls");
 	}
+
 	return 0;
 }
 
@@ -154,7 +177,8 @@ void printCard(int cardInDeck, int index) {
 	cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
 	index: 문양 출력에 이용, save 변수의 값을 받는다*/
 
-	char pattern[4] = "";
+	char pattern[4] = "";	//UTF-8 환경에선 문양이 3바이트이므로 NULL
+							//값도 주기 위해 4바이트로 선언
 	/*인덱스에 따라 문양 출력*/
 	if (index < 0) printf("");	//비어있으면 아무것도 출력하지 않음
 	else if (index < 13) strcpy_s(pattern, 4, "♠");
@@ -258,7 +282,6 @@ void drawCard(int deck[], int* save, int playerOrDealer) {
 deck: player 또는 dealer의 덱, player, dealer 변수의 값을 받는다
 *save: 뽑은 카드의 위치 저장(문양 출력에 이용), save의 값을 받는다
 playerOrDealer: 플레이어인지 딜러인지 확인하고 A 선택권 부여*/
-
 	srand((unsigned)time(NULL)); //랜덤 시드
 	static int compare[10];		//지금까지 뽑은 카드를 저장하는 곳
 	static int cnt = 0;			//지금까지 뽑은 카드의 개수
@@ -480,4 +503,21 @@ void gameInfo() {
 			break;
 		}
 	}
+}
+
+void playingBgm(void) {
+	openBgm.lpstrElementName = BGM;			//파일 오픈
+	openBgm.lpstrDeviceType = "mpegvideo";	//mp3 형식
+	mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE, (DWORD)(LPVOID)&openBgm);
+	dwID = openBgm.wDeviceID;
+	mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&openBgm);	//음악 반복 재생
+}
+void playingShuffleSound(void) {
+	openShuffleSound.lpstrElementName = SHUFFLE;	//파일 오픈
+	openShuffleSound.lpstrDeviceType = "mpegvideo";	//mp3 형식
+	mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE, (DWORD)(LPVOID)&openShuffleSound);
+	dwID = openShuffleSound.wDeviceID;
+	mciSendCommand(dwID, MCI_PLAY, MCI_NOTIFY, (DWORD)(LPVOID)&openShuffleSound);	//음악을 한 번 재생
+	Sleep(1800);	//효과음이 재생될 때까지 정지했다가
+	mciSendCommand(dwID, MCI_SEEK, MCI_SEEK_TO_START, (DWORD)(LPVOID)NULL);	//음원 재생 위치를 처음으로 초기화
 }
