@@ -153,7 +153,7 @@ void printCard(int cardInDeck, int index) {
 	cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
 	index: 문양 출력에 이용, save 변수의 값을 받는다*/
 
-	char pattern[5] = "";
+	char pattern[3] = "";
 	/*인덱스에 따라 문양 출력*/
 	if (index < 0) printf("");	//비어있으면 아무것도 출력하지 않음
 	else if (index < 13) strcpy_s(pattern, 3, "♠");
