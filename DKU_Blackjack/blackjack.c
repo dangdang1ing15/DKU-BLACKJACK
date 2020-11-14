@@ -141,6 +141,7 @@ int main(void)
 		}
 		else if (menuSelect == 2) {		//'게임종료' 선택하면 실행
 			//게임 종료
+			printf("게임을 종료합니다.\n");
 			return 0;
 		}
 		system("cls");
@@ -153,13 +154,13 @@ void printCard(int cardInDeck, int index) {
 	cardInDeck: 카드 번호를 출력에 이용, player, dealer 변수의 값을 받는다
 	index: 문양 출력에 이용, save 변수의 값을 받는다*/
 
-	char pattern[3] = "";
+	char pattern[4] = "";
 	/*인덱스에 따라 문양 출력*/
 	if (index < 0) printf("");	//비어있으면 아무것도 출력하지 않음
-	else if (index < 13) strcpy_s(pattern, 3, "♠");
-	else if (index < 26) strcpy_s(pattern, 3, "◆");
-	else if (index < 39) strcpy_s(pattern, 3, "♣");
-	else strcpy_s(pattern, 3, "♥");
+	else if (index < 13) strcpy_s(pattern, 4, "♠");
+	else if (index < 26) strcpy_s(pattern, 4, "◆");
+	else if (index < 39) strcpy_s(pattern, 4, "♣");
+	else strcpy_s(pattern, 4, "♥");
 
 	/*카드값 출력*/
 	switch (cardInDeck) {
@@ -267,8 +268,8 @@ playerOrDealer: 플레이어인지 딜러인지 확인하고 A 선택권 부여*
 		index = rand() % 52;
 		compare[cnt] = index;	//인덱스를 저장
 		for (int j = 0; j < i; j++) {
-			if (compare[i] == compare[j]) {	//중복이 있으면
-				cnt--;						//인덱스 다시 생성
+			if (compare[cnt] == compare[j]) {	//중복이 있으면
+				i--;						//인덱스 다시 생성
 				break;
 			}
 		}
@@ -464,7 +465,14 @@ void gameInfo() {
 	system("cls");
 	printf("\n\n");
 	printf("               [DKU BLACKJAK]\n\n");
-	printf("제작자: 김성현, 김민성, 전종휘, 홍준서, 방지석\n");
+	printf("룰 설명\n");
+	printf("1. 먼저 베팅을 진행합니다.\n");
+	printf("2. 카드 두 장을 나누어주고, 딜러는 한 장만 공개합니다.\n");
+	printf("3. 카드 합이 21에 가까운 사람이 승리합니다.\n");
+	printf("4. 21을 넘으면 버스트(Bust), 패배입니다.\n");
+	printf("5. 딜러는 카드 합이 16 이하면 한 장을 더 받습니다.\n");
+	printf("6.A는 1 또는 11으로, 10, J, Q, K는 모두 10으로 취급합니다.\n");
+	printf("\n제작자: 김성현, 김민성, 전종휘, 홍준서, 방지석\n");
 	printf("\n스페이스바를 누르면 메인화면으로 돌아갑니다.");
 
 	while (13) {
